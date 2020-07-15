@@ -35,12 +35,25 @@ const Form = props => {
     const validateChange = event => {
         event.persist();
 
-        if (event.target.value.length === 0) {
+        const value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+
+        yup
+        .reach(formSchema, event.target.name)
+        .validate(value)
+        .then(valid =>
             setErrors({
-                ...errors,
-                [event.target.name]: `${event.target.name} field is required`
+            ...errors,
+            [event.target.name]: ""
+            })
+        )
+        .catch(error => {
+            setErrors({
+            ...errors,
+            [event.target.name]: error.errors[0]
             });
+            console.log(event.target.value);
         }
+        );
     };
 
     const handleChange = event => {
